@@ -18,9 +18,9 @@ public class CadastrarLivroUC
             int idNovoLivro = await _repository.Cadastrar(_livro);
             return idNovoLivro;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception("Erro ao cadastrar livro: " + ex.Message);
+            throw;
         }
         
     }

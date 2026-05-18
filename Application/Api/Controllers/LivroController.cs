@@ -27,7 +27,7 @@ public class LivroController : Controller
         }
         catch (Exception ex)
         {
-            return BadRequest(ApiResponse<int>.Falha(ex.Message));
+            return BadRequest(ApiResponse<int>.Falha("Erro ao cadastrar livro: " + ex.Message));
         }
 
     }
