@@ -1,6 +1,10 @@
-# Biblioteca API
+## Como executar 
 
-API de gerenciamento de biblioteca desenvolvida em **.NET 8**, com cadastro de usuários, livros e empréstimos.
+1. Instale .NET 8 SDK
+2. Clone/abra o projeto
+3. dotnet restore && dotnet run
+4. Acesse http://localhost:XXXX/swagger
+5. Em Authorize, use: biblioteca-token-local 
 
 ---
 

@@ -1,12 +1,15 @@
-﻿using BibliotecaApi.Application.Api.Responses;
+﻿using BibliotecaApi.Application.Api.Auth;
+using BibliotecaApi.Application.Api.Responses;
 using BibliotecaApi.UseCases.Emprestimo;
 using BibliotecaApi.UseCases.Emprestimo.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace BibliotecaApi.Application.Api.Controllers;
 
 [ApiController]
+[Authorize(AuthenticationSchemes = ApiTokenAuthenticationDefaults.Scheme)]
 [Route("[controller]/[action]")]
 public class EmprestimoController : Controller
 {
@@ -17,6 +20,7 @@ public class EmprestimoController : Controller
     [SwaggerOperation(Summary = "Registra um novo empréstimo de livro")]
     [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ApiResponse<int>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Cadastrar([FromBody] CadastrarEmprestimoInputDTO input)
     {
         try
@@ -34,6 +38,7 @@ public class EmprestimoController : Controller
     [SwaggerOperation(Summary = "Registra a devolução de um empréstimo de livro")]
     [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Devolver([FromBody] DevolverEmprestimoInputDTO input)
     {
         try

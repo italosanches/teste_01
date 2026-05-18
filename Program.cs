@@ -1,13 +1,9 @@
+using BibliotecaApi.Application.Api.Auth;
 using MinimalApplication.Infrastructure.IOC;
-// Ensure the SQLitePCLRaw.bundle_green package is installed in your project.
 
 var builder = WebApplication.CreateBuilder(args);
-// Initialize SQLitePCL Batteries using the correct bundle.
-
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -16,17 +12,14 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Biblioteca API",
         Version = "v1"
     });
-    //c.SwaggerGeneratorOptions = new()
-    //{
-    //    OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0
-    //};
-}); ;
+    ApiAuthenticationExtensions.ConfigureApiTokenSwagger(c);
+});
 
+builder.Services.AddApiTokenAuthentication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -38,6 +31,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

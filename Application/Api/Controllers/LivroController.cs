@@ -1,7 +1,9 @@
-﻿using BibliotecaApi.Application.Api.Responses;
+﻿using BibliotecaApi.Application.Api.Auth;
+using BibliotecaApi.Application.Api.Responses;
 using BibliotecaApi.Domain.Entities;
 using BibliotecaApi.UseCases.Livro;
 using BibliotecaApi.UseCases.Livro.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -16,6 +18,7 @@ public class LivroController : Controller
 
  
     [HttpPost]
+    [Authorize(AuthenticationSchemes = ApiTokenAuthenticationDefaults.Scheme)]
     [SwaggerOperation(Summary = "Adiciona uma nova categoria retornando o seu respectivo Id")]
     [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(ApiResponse<int>))]
     [SwaggerResponse(StatusCodes.Status400BadRequest)]
