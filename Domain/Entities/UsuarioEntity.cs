@@ -7,6 +7,8 @@ public class UsuarioEntity
     public string CPF { get; private set; }
     public string Email { get; private set; }
 
+    public bool  EmprestimoEmAtraso { get; private set; }
+
     public void Cadastrar(string nome, string cpf, string email)
     {
         if (string.IsNullOrWhiteSpace(nome))
@@ -21,5 +23,6 @@ public class UsuarioEntity
         Nome = nome.Trim();
         CPF = cpf.Trim();
         Email = email?.Trim();
+        EmprestimoEmAtraso = false;
     }
 }

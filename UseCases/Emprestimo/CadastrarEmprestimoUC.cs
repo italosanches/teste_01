@@ -8,6 +8,7 @@ public class CadastrarEmprestimoUC
 {
     private readonly EmprestimoRepository _emprestimoRepository = new EmprestimoRepository();
     private readonly LivroRepository _livroRepository = new LivroRepository();
+    private readonly UsuarioRepository _usuarioRepository = new UsuarioRepository();
 
     public async Task<int> Execute(CadastrarEmprestimoInputDTO input)
     {
@@ -15,6 +16,12 @@ public class CadastrarEmprestimoUC
         {
             if (await _emprestimoRepository.ExisteEmprestimoAtivoPorLivro(input.IdLivro))
                 throw new Exception("Este livro já está emprestado e ainda não foi devolvido.");
+
+            if (await _emprestimoRepository.ExisteEmprestimoEmAtrasoPorUsuario(input.IdUsuario))
+            {
+                await _usuarioRepository.AtualizarInadimplencia(input.IdUsuario, true);
+                throw new Exception("Usuário com empréstimo em atraso não pode realizar novo empréstimo.");
+            }
 
             var emprestimo = new EmprestimoEntity();
 
