@@ -49,6 +49,8 @@ public sealed class LivroEntity
             throw new ArgumentException("ISBN não pode ser vazio.");
         if(isbn.Any(c => !char.IsDigit(c)))
             throw new ArgumentException("ISBN deve conter apenas números.");
+        if (isbn.Replace(" ","").Length != 13)
+            throw new ArgumentException("ISBN deve conter exatamente 13 dígitos.");
     }
 
 
