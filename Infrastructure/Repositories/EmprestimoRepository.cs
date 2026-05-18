@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using BibliotecaApi.Domain.Entities;
 using BibliotecaApi.Infrastructure.Data;
-using System.Data.Common;
 
 namespace BibliotecaApi.Infrastructure.Repositories;
 
@@ -31,11 +30,7 @@ public class EmprestimoRepository
             valor = emprestimo.Valor
         };
 
-        using (var connection = _session.Connection)
-        {
-            var result = await _session.Connection.QueryFirstAsync<int>(sql, parameters);
-            return result;
-        }
+        return await _session.Connection.QueryFirstAsync<int>(sql, parameters);
     }
 
     public async Task<bool> Atualizar(EmprestimoEntity emprestimo)
@@ -70,7 +65,16 @@ public class EmprestimoRepository
 
     public async Task<EmprestimoEntity?> ObterPorIdAsync(int id)
     {
-        var sql = "SELECT id, id_usuario idUsuario, id_livro idLivro, data_emprestimo dataEmpretimo, data_prevista_devolucao dataPrevistaDevolucao, data_devolucao dataDevolucao FROM Emprestimos WHERE id = @id";
+        const string sql = @"
+            SELECT id,
+                   id_usuario AS IdUsuario,
+                   id_livro AS IdLivro,
+                   data_emprestimo AS DataEmprestimo,
+                   data_prevista_devolucao AS DataPrevistaDevolucao,
+                   data_devolucao AS DataDevolucao,
+                   valor AS Valor
+            FROM Emprestimos
+            WHERE id = @id";
         return await _session.Connection.QueryFirstOrDefaultAsync<EmprestimoEntity>(sql, new { id });
     }
 
@@ -82,11 +86,24 @@ public class EmprestimoRepository
             WHERE id_livro = @id_livro
             AND data_devolucao IS NULL";
 
-        int count;
-        using (var connection = _session.Connection)
+        int count = await _session.Connection.QueryFirstAsync<int>(sql, new { id_livro = idLivro });
+        return count > 0;
+    }
+
+    public async Task<bool> ExisteEmprestimoEmAtrasoPorUsuario(int idUsuario)
+    {
+        const string sql = @"
+            SELECT COUNT(1)
+            FROM Emprestimos
+            WHERE id_usuario = @id_usuario
+            AND data_devolucao IS NULL
+            AND data_prevista_devolucao < @agora";
+
+        int count = await _session.Connection.QueryFirstAsync<int>(sql, new
         {
-            count = await connection.QueryFirstAsync<int>(sql, new { id_livro = idLivro });
-        }
+            id_usuario = idUsuario,
+            agora = DateTime.Now
+        });
         return count > 0;
     }
 }

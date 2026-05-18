@@ -15,30 +15,29 @@ public class UsuarioRepository
 
     public async Task<int> Cadastrar(UsuarioEntity usuario)
     {
-        const string sql = "INSERT INTO Usuarios (nome, cpf, email) VALUES (@nome, @cpf, @email) RETURNING id";
+        const string sql = "INSERT INTO Usuarios (nome, cpf, email, tem_livro_em_atraso) VALUES (@nome, @cpf, @email, @temLivroEmAtraso) RETURNING id";
 
         var parameters = new
         {
             nome = usuario.Nome,
             cpf = usuario.CPF,
-            email = usuario.Email
+            email = usuario.Email,
+            temLivroEmAtraso = false
         };
 
-        using (var connection = _session.Connection)
-        {
-            var result = await _session.Connection.QueryFirstAsync<int>(sql, parameters);
-            return result;
-        }
+        return await _session.Connection.QueryFirstAsync<int>(sql, parameters);
+    }
+
+    public async Task AtualizarInadimplencia(int idUsuario, bool temLivroEmAtraso)
+    {
+        const string sql = "UPDATE Usuarios SET tem_livro_em_atraso = @temLivroEmAtraso WHERE id = @idUsuario";
+        await _session.Connection.ExecuteAsync(sql, new { idUsuario, temLivroEmAtraso });
     }
 
     public async Task<bool> VerificaCpfNoDb(string cpf)
     {
         const string sql = "SELECT COUNT(1) FROM Usuarios WHERE cpf = @cpf";
-        var parameters = new { cpf };
-        using (var connection = _session.Connection)
-        {
-            int count = await _session.Connection.QueryFirstAsync<int>(sql, parameters);
-            return count > 0;
-        }
+        int count = await _session.Connection.QueryFirstAsync<int>(sql, new { cpf });
+        return count > 0;
     }
 }

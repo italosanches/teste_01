@@ -16,16 +16,11 @@ public class LivroRepository
 
     public async Task<int> Cadastrar(LivroEntity livro)
     {
-        
-        var sql = "INSERT INTO Livros(titulo, autor, isbn) VALUES(@titulo, @autor,  @isbn) returning id";
+        const string sql = "INSERT INTO Livros(titulo, autor, isbn) VALUES(@titulo, @autor, @isbn) RETURNING id";
 
-        var parameters = new { titulo = livro.Titulo, autor= livro.Autor, isbn = livro.ISBN};
+        var parameters = new { titulo = livro.Titulo, autor = livro.Autor, isbn = livro.ISBN };
 
-        using (var connection = _session.Connection)
-        {
-            var result = await _session.Connection.QueryFirstAsync<int>(sql, parameters, null);
-            return result;
-        }
+        return await _session.Connection.QueryFirstAsync<int>(sql, parameters);
     }
 
     public async Task MarcarComoIndisponivel(int idLivro)
@@ -39,7 +34,7 @@ public class LivroRepository
         const string sql = "UPDATE Livros SET disponivel = TRUE WHERE id = @id";
         await _session.Connection.ExecuteAsync(sql, new { id = idLivro });
     }
-     
+
     public async Task<List<LivroEntity>> ListarLivros()
     {
         const string sql = "SELECT * FROM Livros";
