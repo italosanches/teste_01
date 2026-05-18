@@ -42,10 +42,15 @@ public class EmprestimoEntity
     {
         if (DataDevolucao == null)
             throw new Exception("Empréstimo ainda não devolvido.");
-        
-        TimeSpan atraso = DataDevolucao.Value - DataPrevistaDevolucao;
-        decimal valorMulta = (decimal)atraso.Days * 2.00m; // Exemplo: R$2,00 por dia de atraso
-        return valorMulta;
+
+        if(DataDevolucao.Value.Date > DataPrevistaDevolucao.Date)
+        {
+            TimeSpan atraso = DataDevolucao.Value - DataPrevistaDevolucao;
+            decimal valorMulta = (decimal)atraso.Days * 2.00m; // Exemplo: R$2,00 por dia de atraso
+            return valorMulta;
+        }
+
+        return 0;
         
     }
 }
