@@ -26,15 +26,13 @@ public class DevolverEmprestimoUC
 
             await _emprestimoRepository.Atualizar(emprestimo);
 
-            int idEmprestimo = await _emprestimoRepository.Cadastrar(emprestimo);
-
             await _livroRepository.MarcarComoDisponivel(emprestimo.IdLivro);
 
             return $"Empréstimo devolvido com sucesso. Multa: R${emprestimo.Multa:F2}, Total a pagar: R${emprestimo.Total:F2}";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception("Erro ao devolver o  empréstimo: " + ex.Message);
+            throw;
         }
     }
 }
