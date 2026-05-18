@@ -73,4 +73,20 @@ public class EmprestimoRepository
         var sql = "SELECT id, id_usuario idUsuario, id_livro idLivro, data_emprestimo dataEmpretimo, data_prevista_devolucao dataPrevistaDevolucao, data_devolucao dataDevolucao FROM Emprestimos WHERE id = @id";
         return await _session.Connection.QueryFirstOrDefaultAsync<EmprestimoEntity>(sql, new { id });
     }
+
+    public async Task<bool> ExisteEmprestimoAtivoPorLivro(int idLivro)
+    {
+        const string sql = @"
+            SELECT COUNT(1)
+            FROM Emprestimos
+            WHERE id_livro = @id_livro
+            AND data_devolucao IS NULL";
+
+        int count;
+        using (var connection = _session.Connection)
+        {
+            count = await connection.QueryFirstAsync<int>(sql, new { id_livro = idLivro });
+        }
+        return count > 0;
+    }
 }
