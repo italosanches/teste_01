@@ -39,5 +39,12 @@ public class LivroRepository
         const string sql = "UPDATE Livros SET disponivel = TRUE WHERE id = @id";
         await _session.Connection.ExecuteAsync(sql, new { id = idLivro });
     }
+     
+    public async Task<List<LivroEntity>> ListarLivros()
+    {
+        const string sql = "SELECT * FROM Livros";
+        var livros = await _session.Connection.QueryAsync<LivroEntity>(sql);
+        return livros.ToList();
+    }
 
 }
